@@ -14,6 +14,7 @@ class Cube:
 	def __init__(self, posx, posy, color=COLOR):
 		self.posx = posx
 		self.posy = posy
+		self.pos = (self.posx, self.posy)
 		self.color = color
 
 	def move(self, dirnx, dirny):
@@ -24,6 +25,8 @@ class Cube:
 		pygame.draw.rect(window, COLOR ,(DIST_BTN_ROWS * self.posx, DIST_BTN_ROWS * self.posy, DIST_BTN_ROWS, DIST_BTN_ROWS))		
 
 class Snake:
+	body = []
+	turns = {}
 	def __init__(self, posx, posy, color=COLOR):
 		self.posx = posx
 		self.posy = posy
@@ -31,31 +34,44 @@ class Snake:
 		self.dirny = 0
 		self.color = color
 		self.head = Cube(posx, posy)
+		self.body.append(self.head)
+		self.pos = (self.posx, self.posy)
 
 	def move(self):
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+			if (event.type == pygame.QUIT):
 				pygame.quit()
 
 			keys = pygame.key.get_pressed()
 
-			if keys[pygame.K_LEFT]:
+			if ( keys[pygame.K_LEFT] ):
 				self.dirnx = -1
 				self.dirny = 0
+				self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
 
-			if keys[pygame.K_RIGHT]:
+			if ( keys[pygame.K_RIGHT] ):
 				self.dirnx = 1
 				self.dirny = 0
+				
 
-			if keys[pygame.K_UP]:
+			if ( keys[pygame.K_UP] ):
 				self.dirny = -1
 				self.dirnx = 0
 
-			if keys[pygame.K_DOWN]:
+			if ( keys[pygame.K_DOWN] ):
 				self.dirny = 1
 				self.dirnx = 0
 
-			self.head.move(self.dirnx, self.dirny)
+			
+
+			for i, c in enumerate(self.body):
+				p_x = c.posx
+				p_y = c.posy
+				print(p_x)
+				print(p_y)
+				print(self.turns)
+
+		self.head.move(self.dirnx, self.dirny)
 
 	def draw(self, window):
 		self.head.draw(window)
