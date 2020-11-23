@@ -126,6 +126,31 @@ class Snake:
 		self.body[-1].dirny = tail_y
 		
 
+def randomCube(item):
+	position = item.body
+	while ( True ):
+		x = random.randrange(ROWS)
+		y = random.randrange(ROWS)
+		
+		if ( len(list(filter(lambda z: z.pos == (x, y), position))) > 0):
+			print(lambda z: z.pos == (x, y), position)
+			continue
+		else:
+			break
+	return (x, y)
+
+def randomCube_2(item):
+	position = item.body
+
+	while True:
+		x = random.randrange(ROWS)
+		y = random.randrange(ROWS)
+		if ( position.posx == x and position.posy == y):
+			continue
+		else:
+			break
+
+	return (x, y)
 def draw_grid(window):
 	x = 0
 	y = 0
@@ -135,19 +160,20 @@ def draw_grid(window):
 		pygame.draw.line(window, WHITE, (x, 0), (x, SIZE))
 		pygame.draw.line(window, WHITE, (0,y), (SIZE, y))
 
+
 def redraw(window):
-	global snake, cube
+	global snake, randcube
 	window.fill(BLACK)
 	snake.draw(window)
-	cube.draw(window)
+	randcube.draw(window)
 	draw_grid(window)
 	pygame.display.update()
 
 
 def main():
-	global snake, cube
+	global snake, randcube
 	snake = Snake(15, 15)
-	cube = Cube(10, 10, color=COLOR)
+	randcube = Cube(10, 10, color=RED)
 	window = pygame.display.set_mode((500, 500))
 
 	play = True
@@ -158,8 +184,11 @@ def main():
 		pygame.time.delay(50)
 		clock.tick(10)
 
-		if ( snake.body[0].posx == cube.posx and snake.body[0].posy == cube.posy ):
+		if ( snake.body[0].posx == randcube.posx and snake.body[0].posy == randcube.posy ):
 			snake.add_cube()
+			pos = randomCube(snake)
+			randcube = Cube(15, 15, color=RED)
+			print(pos)
 		snake.move()
 
 		redraw(window)
