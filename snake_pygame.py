@@ -12,7 +12,7 @@ import random
 	# add score
 class Cube:
 	
-	def __init__(self, posx, posy, color=COLOR):
+	def __init__(self, posx, posy, color=GREEN):
 		self.posx = posx
 		self.posy = posy
 		self.pos = (self.posx, self.posy)
@@ -27,10 +27,11 @@ class Cube:
 
 		self.posx += self.dirnx 
 		self.posy += self.dirny
+		self.pos = (self.posx, self.posy)
 
 	def draw(self, window):
 		distance_btn_rows = SIZE // ROWS
-		pygame.draw.rect(window, GREEN ,(DIST_BTN_ROWS * self.posx, DIST_BTN_ROWS * self.posy, DIST_BTN_ROWS, DIST_BTN_ROWS))		
+		pygame.draw.rect(window, self.color ,(DIST_BTN_ROWS * self.posx, DIST_BTN_ROWS * self.posy, DIST_BTN_ROWS, DIST_BTN_ROWS))		
 
 class Snake:
 	body = []
@@ -56,7 +57,6 @@ class Snake:
 				self.dirnx = -1
 				self.dirny = 0
 				self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
-				self.add_cube()
 
 			if ( keys[pygame.K_RIGHT] ):
 				self.dirnx = 1
@@ -106,19 +106,24 @@ class Snake:
 					
 
 	def draw(self, window):
-		self.head.draw(window)
+		for c in self.body:
+			c.draw(window)
 
 	def add_cube(self):
 		tail = self.body[-1]
 		tail_x, tail_y = tail.dirnx, tail.dirny
 
 		if tail_x == 1 and tail_y == 0:
-			self.body.append(Cube(tail.posx + 1, tail.posy, color=COLOR)) 
+			self.body.append(Cube(tail.posx - 1, tail.posy, color=GREEN))
+		if ( tail_x == -1 and tail_y == 0 ):
+			self.body.append(Cube(tail.posx + 1, tail.posy, color=GREEN))
+		if ( tail_x == 0 and tail_y == 1 ):
+			self.body.append(Cube(tail.posx, tail.posy - 1, color=GREEN))
+		if ( tail_x == 0 and tail_y == -1):
+			self.body.append(Cube(tail.posx, tail.posy + 1, color=GREEN)) 
 
 		self.body[-1].dirnx = tail_x
 		self.body[-1].dirny = tail_y
-		for i in self.body:
-			print((i.posx, i.posy))
 		
 
 def draw_grid(window):
@@ -136,14 +141,13 @@ def redraw(window):
 	snake.draw(window)
 	cube.draw(window)
 	draw_grid(window)
-
 	pygame.display.update()
 
 
 def main():
 	global snake, cube
 	snake = Snake(15, 15)
-	cube = Cube(10, 10, color=(200, 200, 200))
+	cube = Cube(10, 10, color=COLOR)
 	window = pygame.display.set_mode((500, 500))
 
 	play = True
@@ -153,7 +157,9 @@ def main():
 		
 		pygame.time.delay(50)
 		clock.tick(10)
-		
+
+		if ( snake.body[0].posx == cube.posx and snake.body[0].posy == cube.posy ):
+			snake.add_cube()
 		snake.move()
 
 		redraw(window)
