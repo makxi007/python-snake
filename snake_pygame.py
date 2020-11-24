@@ -7,8 +7,8 @@ import random
 	# make a grid +
 	# make a cube +
 	# make a moving Cube +
-	# add random Cube
-	# make Snake be bigger when eat Cube
+	# add random Cube +
+	# make Snake be bigger when eat Cube + 
 	# add score
 class Cube:
 	
