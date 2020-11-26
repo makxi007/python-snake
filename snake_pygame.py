@@ -3,20 +3,6 @@ from config import *
 import pygame
 import random
 
-# Snake 
-	# make a grid +
-	# make a cube +
-	# make a moving Cube +
-	# add random Cube +
-	# make Snake be bigger when eat Cube + 
-	# add score + 
-	# add pause quit buttons +
-	# add play again button +
-	# add smash area +
-	# add pause area + 
-	# make reset of the game:+
-	# https://www.techwithtim.net/tutorials/game-development-with-python/snake-pygame/tutorial-4/
-
 pygame.init()
 
 class Cube:
@@ -178,6 +164,7 @@ class gameEvent:
 			pygame.display.update()
 			clock.tick(15)
 
+	#draw lines around the buttons
 	def draw_line(self, x, y, w, h, color_in, color_off, line_width):
 		mouse = pygame.mouse.get_pos()
 		click = pygame.mouse.get_pressed()
@@ -272,7 +259,6 @@ def game_loop():
 		keys = pygame.key.get_pressed()
 		#Press escape to pause the game
 		if (keys[pygame.K_ESCAPE]):
-
 			#Press c to continue the game
 			game_event.game_intro(window, "Pause", "pause")
 
