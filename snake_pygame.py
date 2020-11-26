@@ -257,7 +257,7 @@ def game_loop():
 		if (keys[pygame.K_y]):
 			game_event.smash(window, True)
 
-		for c in range(len(snake.body) ):
+		for c in range(len(snake.body)):
 			print(c)
 
 			check_ifx = snake.body[c].posx in list(map(lambda z:z.posx, snake.body[c+1:]))
