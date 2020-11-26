@@ -9,12 +9,12 @@ import random
 	# make a moving Cube +
 	# add random Cube +
 	# make Snake be bigger when eat Cube + 
-	# add score
-	# add pause quit buttons
-	# add play again button
-	# add smash area
-	# add pause area
-	# make reset of the game:
+	# add score + 
+	# add pause quit buttons +
+	# add play again button +
+	# add smash area +
+	# add pause area + 
+	# make reset of the game:+
 	# https://www.techwithtim.net/tutorials/game-development-with-python/snake-pygame/tutorial-4/
 
 pygame.init()
@@ -62,7 +62,6 @@ class Snake:
 		self.dirnx = 0
 		self.dirny = -1
 
-
 	def move(self):
 		for event in pygame.event.get():
 			if (event.type == pygame.QUIT):
@@ -80,7 +79,6 @@ class Snake:
 				self.dirny = 0
 				self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
 				
-
 			if (keys[pygame.K_w]):
 				self.dirny = -1
 				self.dirnx = 0
@@ -98,7 +96,6 @@ class Snake:
 				c.move(turn[0], turn[1])
 				if (i == len(self.body) - 1) == 1:
 					self.turns.pop(p)
-
 			else:
 				if c.dirnx == 1 and c.posx >= ROWS - 1: 
 					c.posx = 0
@@ -119,7 +116,6 @@ class Snake:
 				else:
 					c.move(c.dirnx, c.dirny)
 					
-
 	def draw(self, window):
 		for c in self.body:
 			c.draw(window)
@@ -145,40 +141,65 @@ class gameEvent:
 		global intro, snake
 		print("Reset")
 		intro = False
-		snake.reset((15,15))
-
-	def game_intro(self, window, msg):
+		snake.reset((10,10))
+	
+	def unpause(self):
 		global intro
+		intro = False
+
+	def game_intro(self, window, msg, state):
+		global intro, score
 		intro = True
 		clock = pygame.time.Clock()
 		while (intro == True):
 			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
+				if (event.type == pygame.QUIT):
 					pygame.quit()
 
 				keys = pygame.key.get_pressed()
-				#Press w to continue the game
-				if ( keys[pygame.K_t] ):
+				#Press c to continue the game
+				if ( keys[pygame.K_c] ):
 				 	intro = False
 				 	break
 				
-			self.button(window,msg,150,100,100,100,PURPLE,DARK_PURPLE, self.reset_game)
-
+			if (state.lower() == "fail"):
+				self.button(window,msg,200,50,100,100,DARK_RED,RED)
+				self.draw_line(200,50,100,100,DARK_GREEN,GREEN,5)
+				self.button(window,"PLAY AGAIN",150,300,200,100,DARK_GREEN,GREEN, self.reset_game)
+				self.draw_line(150,300,200,100,DARK_RED,RED,5)
+			if (state.lower() == "pause"):
+				self.button(window,msg,200,50,100,100,DARK_RED,RED)
+				self.draw_line(200,50,100,100,DARK_GREEN,GREEN,5)
+				self.button(window,"CONTINUE",150,300,200,100,DARK_GREEN,GREEN, self.unpause)
+				self.draw_line(150,300,200,100,DARK_RED,RED,5)
+			
+			self.draw_score(window,"SCORE: " + str(score),10,10,150,50,PURPLE)
+			
 			pygame.display.update()
 			clock.tick(15)
 
-	def smash(self, window, is_smashed):
-		if (is_smashed == True):
-			while (is_smashed):
-				for event in pygame.event.get():
-					if (event.type == pygame.QUIT):
-						pygame.quit()
-				
-				self.button(window, "You was smashed!",150,100, 200,100,RED, DARK_RED)
-				self.button(window, "Play again!",200, 400, 100,50, GREEN, LIME_GREEN, self.reset_game)
+	def draw_line(self, x, y, w, h, color_in, color_off, line_width):
+		mouse = pygame.mouse.get_pos()
+		click = pygame.mouse.get_pressed()
+		if (x+w > mouse[0] > x and y+h > mouse[1] > y):
+			pygame.draw.line(window,color_in, (x,y),(x+w,y),line_width + 5)
+			pygame.draw.line(window,color_in, (x,y), (x,y+h),line_width + 5)
+			pygame.draw.line(window,color_in, (x+w,y), (x+w,y+h),line_width + 5 )
+			pygame.draw.line(window,color_in, (x,y+h),(x+w,y+h),line_width + 5)
+		else:	
+			pygame.draw.line(window,color_off, (x,y),(x+w,y),line_width)
+			pygame.draw.line(window,color_off, (x,y), (x,y+h),line_width)
+			pygame.draw.line(window,color_off, (x+w,y), (x+w,y+h),line_width )
+			pygame.draw.line(window,color_off, (x,y+h),(x+w,y+h),line_width)
 
-				pygame.display.update()
+	def draw_score(self, win, msg, x, y, w, h, color):
+		pygame.draw.rect(win,color, (x,y,w,h))
+		text = pygame.font.SysFont("Arial", 20)
+		text_surface, text_rect = self.text_objects(msg, text)
+		text_rect.center = ((x+(w/2), (y+(h/2))))
+		win.blit(text_surface, text_rect)
 
+	#render the font
 	def text_objects(self, text, font):
 		text_surface = font.render(text, True, WHITE)
 		return text_surface, text_surface.get_rect()
@@ -197,6 +218,7 @@ class gameEvent:
 		text_rect.center = ( (x+(w/2), (y+(h/2) )))
 		win.blit(text_surface, text_rect)
 
+#spawn cube at random position
 def randomCube(item):
 	position = item.body
 	while ( True ):
@@ -209,7 +231,6 @@ def randomCube(item):
 		else:
 			break
 	return (x, y)
-
 
 def draw_grid(window):
 	x = 0
@@ -230,40 +251,41 @@ def redraw(window):
 	pygame.display.update()
 
 def game_loop():
-	global snake, randcube, game_event, game_intro, window, play
+	global snake, randcube, game_event, game_intro, window, play, score
 	play = True
-
+	score = 0
 	clock = pygame.time.Clock()
 	while (play):
 		
 		pygame.time.delay(50)
 		clock.tick(10)
 
+		#If snake take cube - CUBE EQUIL NEW POS
 		if (snake.body[0].posx == randcube.posx and snake.body[0].posy == randcube.posy):
 			snake.add_cube()
 			pos = randomCube(snake)
 			randcube = Cube(pos[0], pos[1], color=RED)
+			score += 1
 		
 		snake.move()
 
 		keys = pygame.key.get_pressed()
-		#Press q to pause the game
-		if (keys[pygame.K_r]):
-			pause = True
-			#Press w to continue the game
-			game_event.game_intro(window, "Pause")
+		#Press escape to pause the game
+		if (keys[pygame.K_ESCAPE]):
+
+			#Press c to continue the game
+			game_event.game_intro(window, "Pause", "pause")
 
 		#Smash!
 		if (keys[pygame.K_y]):
-			game_event.smash(window, True)
+			game_event.game_intro(window, "Smashed!", "fail")
 
+		#If snake smash body - FAIL
 		for c in range(len(snake.body)):
-			print(c)
-
-			check_ifx = snake.body[c].posx in list(map(lambda z:z.posx, snake.body[c+1:]))
-			check_ify = snake.body[c].posy in list(map(lambda z:z.posy, snake.body[c+1:]))
-			if (check_ifx and check_ify):
-				game_event.game_intro(window, "Smashed!")
+			coordinates = (snake.body[c].posx, snake.body[c].posy)
+			check = coordinates in list(map(lambda z:z.pos, snake.body[c+1:]))
+			if (check):
+				game_event.game_intro(window, "Smashed!", "fail")
 				break
 
 		redraw(window)
