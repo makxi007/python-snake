@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+
 from config import *
 import pygame
 import random
@@ -125,7 +125,6 @@ class Snake:
 class gameEvent:
 	def reset_game(self):
 		global intro, snake
-		print("Reset")
 		intro = False
 		snake.reset((10,10))
 	
@@ -262,10 +261,6 @@ def game_loop():
 			#Press c to continue the game
 			game_event.game_intro(window, "Pause", "pause")
 
-		#Smash!
-		if (keys[pygame.K_y]):
-			game_event.game_intro(window, "Smashed!", "fail")
-
 		#If snake smash body - FAIL
 		for c in range(len(snake.body)):
 			coordinates = (snake.body[c].posx, snake.body[c].posy)
@@ -275,6 +270,8 @@ def game_loop():
 				break
 
 		redraw(window)
+
+	pygame.quit()
 
 def main():
 	global snake, randcube, game_event, window
