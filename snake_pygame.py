@@ -143,7 +143,7 @@ class gameEvent:
 
 				keys = pygame.key.get_pressed()
 				#Press c to continue the game
-				if ( keys[pygame.K_c] ):
+				if ( keys[pygame.K_w] ):
 				 	intro = False
 				 	break
 				
@@ -256,9 +256,9 @@ def game_loop():
 		snake.move()
 
 		keys = pygame.key.get_pressed()
-		#Press escape to pause the game
-		if (keys[pygame.K_ESCAPE]):
-			#Press c to continue the game
+		#Press q to pause the game
+		if (keys[pygame.K_q]):
+			#Press w to continue the game
 			game_event.game_intro(window, "Pause", "pause")
 
 		#If snake smash body - FAIL
@@ -285,3 +285,4 @@ def main():
 	
 if __name__ == "__main__":
 	main()
+	
